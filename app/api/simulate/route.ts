@@ -6,6 +6,8 @@ import { BRACKET_2026 } from "@/lib/bracket-data";
 import type { SimulatedBracket } from "@/lib/bracket-data";
 import { saveSimulationResults } from "@/lib/leaderboard";
 
+export const maxDuration = 60;
+
 const RATE_LIMIT_ID = "update-object";
 
 async function trySaveResults(result: SimulatedBracket) {
