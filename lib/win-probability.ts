@@ -29,6 +29,21 @@ export function log5WinProbability(winPctA: number, winPctB: number): number {
 }
 
 /**
+ * TBD / First-Four placeholder teams use seed 0. Raw math would treat 0 as
+ * "better" than 1 (seedDiff = 0 - 1). In R64, the open slot is always the
+ * paired line (seeds sum to 17): 1↔16, 8↔9, etc.
+ */
+export function normalizeSeedsForTbdMatchup(
+  seed1: number,
+  seed2: number
+): [number, number] {
+  if (seed1 === 0 && seed2 === 0) return [16, 16];
+  if (seed1 === 0 && seed2 >= 1 && seed2 <= 16) return [17 - seed2, seed2];
+  if (seed2 === 0 && seed1 >= 1 && seed1 <= 16) return [seed1, 17 - seed1];
+  return [seed1, seed2];
+}
+
+/**
  * Model C: Seed-Based Historical Probability
  *
  * Uses logistic regression fitted on 40 years of NCAA Tournament data.
@@ -36,7 +51,8 @@ export function log5WinProbability(winPctA: number, winPctB: number): number {
  * Positive seedDiff means team1 is the higher (better) seed.
  */
 export function seedWinProbability(seed1: number, seed2: number): number {
-  const seedDiff = seed2 - seed1; // positive = team1 has better seed
+  const [s1, s2] = normalizeSeedsForTbdMatchup(seed1, seed2);
+  const seedDiff = s2 - s1; // positive = team1 has better seed
   return 1 / (1 + Math.exp(-0.1667 * seedDiff));
 }
 
