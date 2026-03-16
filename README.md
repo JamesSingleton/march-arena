@@ -1,6 +1,6 @@
 # March Madness AI
 
-An AI-powered NCAA Tournament bracket simulator built with Next.js and Google Gemini. Watch the full 2026 bracket unfold in real time as an AI analyst picks every game — from the First Four through the national championship — using KenPom ratings, historical seed data, and matchup context.
+An AI-powered NCAA Tournament bracket simulator built with Next.js and Google Gemini. Watch the full 2026 bracket unfold in real time as an AI analyst picks every game, from the First Four through the national championship, using KenPom ratings, historical seed data, and matchup context.
 
 Try it out at https://www.marcharena.com.
 
@@ -16,7 +16,6 @@ Try it out at https://www.marcharena.com.
 
 - **Next.js 16** (App Router) + **React 19**
 - **AI SDK** with **Google Gemini 3 Flash** for structured game picks
-- **Workflow** for durable, streaming bracket simulation
 - **Redis** (ioredis) for leaderboard persistence
 - **Tailwind CSS 4** for styling
 - **Vercel Firewall** for rate limiting
