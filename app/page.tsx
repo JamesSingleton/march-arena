@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import Confetti from "react-confetti";
 import { CompressedBracket } from "@/components/compressed-bracket/CompressedBracket";
 import { MatchupStatsPanel } from "@/components/MatchupStatsPanel";
 import { useSimulation } from "@/components/SimulationControls";
@@ -75,11 +76,22 @@ export default function Home() {
   const showOnboarding = !hasStarted && !isComplete;
 
   const [starting, setStarting] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const prevCompleteRef = useRef(false);
+
+  useEffect(() => {
+    if (isComplete && !prevCompleteRef.current) {
+      setShowConfetti(true);
+    }
+    prevCompleteRef.current = isComplete;
+  }, [isComplete]);
 
   const handleStart = useCallback(() => {
     setStarting(true);
     setSimFocusManaged(true);
     setSelectedGameId(null);
+    setShowConfetti(false);
+    prevCompleteRef.current = false;
     runSimulation();
   }, [runSimulation]);
 
@@ -124,7 +136,26 @@ export default function Home() {
   }, [selectedGameId, running, simFocusManaged]);
 
   return (
-    <div className="flex h-[calc(100dvh-3rem)] flex-col overflow-hidden bg-[#ececec] lg:flex-row">
+    <div className="flex h-[calc(100dvh-3rem)] flex-col overflow-hidden bg-[#ececec] lg:flex-row relative">
+      {showConfetti && (
+        <Confetti
+          width={typeof window !== "undefined" ? window.innerWidth : 800}
+          height={typeof window !== "undefined" ? window.innerHeight : 600}
+          confettiSource={{
+            x: typeof window !== "undefined" ? window.innerWidth / 2 : 400,
+            y: typeof window !== "undefined" ? window.innerHeight / 2 : 300,
+            w: 0,
+            h: 0,
+          }}
+          recycle={false}
+          numberOfPieces={500}
+          gravity={0.15}
+          initialVelocityX={15}
+          initialVelocityY={30}
+          onConfettiComplete={() => setShowConfetti(false)}
+          style={{ position: "fixed", top: 0, left: 0, zIndex: 50, pointerEvents: "none" }}
+        />
+      )}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col lg:w-[72%] lg:shrink-0">
         <div className="min-h-0 flex-1 overflow-auto bg-[#ececec]">
           <div className="min-w-max p-3 pb-8">
@@ -220,6 +251,8 @@ export default function Home() {
                     setBracket(BRACKET_2026);
                     setSelectedGameId(null);
                     setSimFocusManaged(false);
+                    setShowConfetti(false);
+                    prevCompleteRef.current = false;
                   }}
                   className="w-full rounded-lg border border-[#dcdddf] bg-white px-4 py-2.5 text-[13px] font-medium text-[#333] hover:bg-[#f5f5f5]"
                 >
