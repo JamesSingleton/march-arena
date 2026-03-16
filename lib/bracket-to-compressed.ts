@@ -167,14 +167,9 @@ export function bracketToCompressedModel(
   };
 }
 
-/** Resolve a matchup after streaming updates (stable compressed ids). */
-export function findCompressedGameById(
-  bracket: Bracket | SimulatedBracket,
-  id: string | null
-): Game | null {
-  if (!id) return null;
-  const m = bracketToCompressedModel(bracket);
-  const pool: Game[] = [
+/** Stable iteration order for compressed-layout games (matches grid / selection). */
+export function compressedModelGamePool(m: CompressedBracketModel): Game[] {
+  return [
     ...m.firstFour,
     ...m.south.r64,
     ...m.south.r32,
@@ -196,5 +191,24 @@ export function findCompressedGameById(
     m.finalFourRight,
     m.championship,
   ];
-  return pool.find((g) => g.id === id) ?? null;
+}
+
+/** Game ids currently simulating (`in_progress`), in bracket display order. */
+export function getInProgressCompressedGameIds(
+  bracket: Bracket | SimulatedBracket
+): string[] {
+  const m = bracketToCompressedModel(bracket);
+  return compressedModelGamePool(m)
+    .filter((g) => g.status === "in_progress")
+    .map((g) => g.id);
+}
+
+/** Resolve a matchup after streaming updates (stable compressed ids). */
+export function findCompressedGameById(
+  bracket: Bracket | SimulatedBracket,
+  id: string | null
+): Game | null {
+  if (!id) return null;
+  const m = bracketToCompressedModel(bracket);
+  return compressedModelGamePool(m).find((g) => g.id === id) ?? null;
 }

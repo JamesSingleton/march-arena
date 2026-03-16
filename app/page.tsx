@@ -6,7 +6,10 @@ import { MatchupStatsPanel } from "@/components/MatchupStatsPanel";
 import { useSimulation } from "@/components/SimulationControls";
 import { BRACKET_2026 } from "@/lib/bracket-data";
 import type { Bracket as BracketType, Game, SimulatedBracket } from "@/lib/bracket-data";
-import { findCompressedGameById } from "@/lib/bracket-to-compressed";
+import {
+  findCompressedGameById,
+  getInProgressCompressedGameIds,
+} from "@/lib/bracket-to-compressed";
 
 function inferSimPhase(b: BracketType | SimulatedBracket): string {
   if (!b.firstFour.every((g) => g.winner)) return "First Four";
@@ -27,14 +30,14 @@ function inferSimPhase(b: BracketType | SimulatedBracket): string {
   return "Complete";
 }
 
-const MOBILE_BRACKET_MQ = "(max-width: 1023px)";
-
 export default function Home() {
   const [bracket, setBracket] = useState<BracketType | SimulatedBracket>(BRACKET_2026);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+  /** App follows in-progress games until the user selects a matchup during the run. */
+  const [simFocusManaged, setSimFocusManaged] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const firstFourSectionRef = useRef<HTMLDivElement | null>(null);
-  const didScrollToFirstFourRef = useRef(false);
+  const bracketRef = useRef(bracket);
+  bracketRef.current = bracket;
 
   const handleBracketUpdate = useCallback((update: BracketType | SimulatedBracket) => {
     setBracket(update);
@@ -52,9 +55,13 @@ export default function Home() {
     [bracket, selectedGameId]
   );
 
-  const handleSelectGame = useCallback((game: Game) => {
-    setSelectedGameId(game.id);
-  }, []);
+  const handleSelectGame = useCallback(
+    (game: Game) => {
+      if (running) setSimFocusManaged(false);
+      setSelectedGameId(game.id);
+    },
+    [running]
+  );
 
   const isComplete =
     "winner" in bracket &&
@@ -68,35 +75,46 @@ export default function Home() {
   const handleStart = useCallback(() => {
     setHasStarted(true);
     setBracket(BRACKET_2026);
-    setSelectedGameId("ff-play-1");
+    setSimFocusManaged(true);
+    setSelectedGameId(null);
     runSimulation();
   }, [runSimulation]);
 
+  // Managed focus: stay on the live in-progress block; re-anchor when the chunk advances.
   useEffect(() => {
-    if (!hasStarted) {
-      didScrollToFirstFourRef.current = false;
-      return;
-    }
-    if (!running || didScrollToFirstFourRef.current) return;
-    if (typeof window === "undefined" || !window.matchMedia(MOBILE_BRACKET_MQ).matches) {
-      return;
-    }
-    const scrollFirstFourIntoView = () => {
-      const el = firstFourSectionRef.current;
-      if (!el) return;
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
+    if (!running || !simFocusManaged) return;
+    const ids = getInProgressCompressedGameIds(bracket);
+    if (ids.length === 0) return;
+    setSelectedGameId((prev) => (prev && ids.includes(prev) ? prev : ids[0]!));
+  }, [bracket, running, simFocusManaged]);
+
+  // Cycle through concurrent in-progress games so the panel visits each sim in the chunk.
+  useEffect(() => {
+    if (!running || !simFocusManaged) return;
+    const intervalMs = 2800;
+    const id = window.setInterval(() => {
+      const ids = getInProgressCompressedGameIds(bracketRef.current);
+      if (ids.length <= 1) return;
+      setSelectedGameId((prev) => {
+        const i = Math.max(0, ids.indexOf(prev ?? ""));
+        return ids[(i + 1) % ids.length]!;
       });
-      didScrollToFirstFourRef.current = true;
-    };
-    // Aside opens and bracket viewport resizes; wait for layout then scroll.
+    }, intervalMs);
+    return () => window.clearInterval(id);
+  }, [running, simFocusManaged]);
+
+  // Scroll focused matchup into view while app-managed.
+  useEffect(() => {
+    if (!running || !simFocusManaged || !selectedGameId) return;
+    if (typeof window === "undefined") return;
     const t = window.setTimeout(() => {
-      requestAnimationFrame(() => requestAnimationFrame(scrollFirstFourIntoView));
-    }, 180);
+      const el = document.querySelector(
+        `[data-game-id="${CSS.escape(selectedGameId)}"]`
+      );
+      el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+    }, 120);
     return () => window.clearTimeout(t);
-  }, [hasStarted, running]);
+  }, [selectedGameId, running, simFocusManaged]);
 
   return (
     <div className="flex h-[calc(100dvh-3rem)] flex-col overflow-hidden bg-[#ececec] lg:flex-row">
@@ -107,7 +125,6 @@ export default function Home() {
               bracket={bracket}
               selectedGameId={selectedGameId}
               onSelectGame={handleSelectGame}
-              firstFourSectionRef={firstFourSectionRef}
             />
           </div>
         </div>
@@ -173,6 +190,7 @@ export default function Home() {
                     setHasStarted(false);
                     setBracket(BRACKET_2026);
                     setSelectedGameId(null);
+                    setSimFocusManaged(false);
                   }}
                   className="w-full rounded-lg border border-[#dcdddf] bg-white px-4 py-2.5 text-[13px] font-medium text-[#333] hover:bg-[#f5f5f5]"
                 >
