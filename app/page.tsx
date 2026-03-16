@@ -74,7 +74,13 @@ export default function Home() {
 
   const handleStart = useCallback(() => {
     setHasStarted(true);
-    setBracket(BRACKET_2026);
+    setBracket({
+      ...BRACKET_2026,
+      firstFour: BRACKET_2026.firstFour.map((g) => ({
+        ...g,
+        status: "in_progress" as const,
+      })),
+    });
     setSimFocusManaged(true);
     setSelectedGameId(null);
     runSimulation();
