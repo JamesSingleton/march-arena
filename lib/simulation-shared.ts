@@ -5,9 +5,9 @@ import { placeholderGame } from "@/lib/bracket-data";
 /** Order matches `BRACKET_2026.firstFour` indices (NCAA.com 2026). */
 export const FIRST_FOUR_SLOTS: Array<{ region: number; gameIndex: number; slot: 1 | 2 }> = [
   { region: 0, gameIndex: 0, slot: 2 }, // UMBC/Howard -> South (Florida opponent)
-  { region: 3, gameIndex: 4, slot: 2 }, // Texas/NC State -> Midwest (Tennessee opponent)
+  { region: 3, gameIndex: 4, slot: 2 }, // Miami OH/SMU -> Midwest (Tennessee opponent)
   { region: 3, gameIndex: 0, slot: 2 }, // Prairie View/Lehigh -> Midwest (Michigan opponent)
-  { region: 2, gameIndex: 4, slot: 2 }, // Miami OH/SMU -> West (BYU opponent)
+  { region: 2, gameIndex: 4, slot: 2 }, // Texas/NC State -> West (BYU opponent)
 ];
 
 // Simulation stages for region-by-region flow

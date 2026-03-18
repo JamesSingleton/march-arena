@@ -542,7 +542,7 @@ export const BRACKET_2026: Bracket = {
     finalGame("ff1", team("UMBC", 16), team("Howard", 16), 83, 86),
     scheduledGame("ff2", team("Miami OH", 11), team("SMU", 11)),
     scheduledGame("ff3", team("Prairie View", 16), team("Lehigh", 16)),
-    scheduledGame("ff4", team("Texas", 11), team("NC State", 11)),
+    finalGame("ff4", team("Texas", 11), team("NC State", 11), 68, 66),
   ],
   regions: [
     {
