@@ -540,7 +540,7 @@ export const BRACKET_2026: Bracket = {
   schedule: SCHEDULE_2026,
   firstFour: [
     finalGame("ff1", team("UMBC", 16), team("Howard", 16), 83, 86),
-    scheduledGame("ff2", team("Miami OH", 11), team("SMU", 11)),
+    finalGame("ff2", team("Miami OH", 11), team("SMU", 11), 89, 79),
     finalGame("ff3", team("Prairie View", 16), team("Lehigh", 16), 67, 55),
     finalGame("ff4", team("Texas", 11), team("NC State", 11), 68, 66),
   ],
@@ -626,7 +626,7 @@ export const BRACKET_2026: Bracket = {
           scheduledGame("m2", team("Georgia", 8), team("Saint Louis", 9)),
           scheduledGame("m3", team("Texas Tech", 5), team("Akron", 12)),
           scheduledGame("m4", team("Alabama", 4), team("Hofstra", 13)),
-          scheduledGame("m5", team("Tennessee", 6), team("SMU", 11)),
+          scheduledGame("m5", team("Tennessee", 6), team("Miami OH", 11)),
           scheduledGame("m6", team("Virginia", 3), team("Wright St", 14)),
           scheduledGame("m7", team("Kentucky", 7), team("Santa Clara", 10)),
           scheduledGame("m8", team("Iowa State", 2), team("Tennessee St", 15)),
