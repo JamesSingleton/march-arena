@@ -590,7 +590,7 @@ export const BRACKET_2026: Bracket = {
           finalGame("e9", team("Duke", 1), team("TCU", 9), 81, 58),
           finalGame("e10", team("St John's", 5), team("Kansas", 4), 67, 65),
           finalGame("e11", team("Louisville", 6), team("Michigan St", 3), 69, 77),
-          finalGame("e12", team("UConn", 2), team("UCLA", 7), 57, 73),
+          finalGame("e12", team("UCLA", 7), team("UConn", 2), 57, 73),
         ],
         [
           finalGame("e13", team("Duke", 1), team("St John's", 5), 80, 75),
