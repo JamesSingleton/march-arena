@@ -1,17 +1,19 @@
 # March Madness AI
 
-An AI-powered NCAA Tournament bracket simulator built with Next.js and Claude Haiku.
+An AI-powered NCAA Tournament bracket simulator for 2026. I've added final games as they happen.
 
-**`NEXT_PUBLIC_SHOW_SIM`** — single switch (`true` / `false`):
+**NEXT_PUBLIC_SHOW_SIM** — single switch (`true` / `false`):
 
-| Value   | Behavior |
-|--------|----------|
-| `true` | Bracket page: **Start simulation** + streaming sim. **Leaderboard** in nav. **`POST /api/simulate`** enabled. |
-| `false` | Bracket + matchup-stats sidebar only (hosted-style). No sim API from the app. |
+
+| Value   | Behavior                                                                                                      |
+| ------- | ------------------------------------------------------------------------------------------------------------- |
+| `true`  | Bracket page: **Start simulation** + streaming sim. **Leaderboard** in nav. **`POST /api/simulate`** enabled. |
+| `false` | Bracket + matchup-stats sidebar only (hosted-style). No sim API from the app.                                 |
+
 
 **If unset:** sim is **on** in `development`, **off** in `production` builds.
 
-Site: https://www.marcharena.com (`NEXT_PUBLIC_SHOW_SIM=false`).
+Site: [https://www.marcharena.com](https://www.marcharena.com) (`NEXT_PUBLIC_SHOW_SIM=false`).
 
 ## How It Works (local / fork)
 
