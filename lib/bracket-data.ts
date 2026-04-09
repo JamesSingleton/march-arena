@@ -656,7 +656,7 @@ export const BRACKET_2026: Bracket = {
     },
   ],
   finalFour: [
-    finalGame("ff-east-south", team("UConn", 2), team("Illinois", 3), 71,62),
+    finalGame("ff-east-south", team("UConn", 2), team("Illinois", 3), 71, 62),
     finalGame("ff-west-midwest", team("Arizona", 1), team("Michigan", 1), 73, 91),
   ],
   championship: finalGame("champ", team("UConn", 2), team("Michigan", 1), 63, 69),
